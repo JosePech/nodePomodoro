@@ -30,8 +30,14 @@ function notifyPomodoro(){
 
 var calculateRemaining = function(wanted){
   if(wanted){
-    let timediff = Date.now() - wanted.startedAt;
-    return POMODORO_LENGTH - timediff;    
+    return POMODORO_LENGTH - calculateElapsed(wanted);    
+  }
+  return undefined;
+}
+
+var calculateElapsed = function(wanted){
+  if(wanted){
+    return Date.now() - wanted.startedAt;
   }
   return undefined;
 }
@@ -56,6 +62,7 @@ var startOrResumeCommand = function(){
   wanted = db.find( item => item.status==STATUS.PAUSED );
   if(wanted){
     wanted.status = STATUS.RUNNING;
+    wanted.startedAt = Date.now() - wanted.elapsed;
     return "Pomodoro resumed";
   } else {
     var pomodoro = { startedAt : Date.now(), status : STATUS.RUNNING };
@@ -68,6 +75,8 @@ var pauseCommand = function(){
   var wanted = db.find( item => item.status==STATUS.RUNNING );
   if(wanted){
     wanted.status = STATUS.PAUSED;
+    wanted.elapsed = calculateElapsed(wanted);
+    console.log(wanted.elapsed);
     return "Pomodoro paused";
   }
   return "Nothing to do";
