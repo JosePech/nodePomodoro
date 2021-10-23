@@ -1,7 +1,7 @@
 const http = require('http');
 const { exec } = require('child_process');
 
-const POMODORO_LENGTH = 20000;
+const POMODORO_LENGTH = 1500000; // 25 minutes
 const STATUS = {
   RUNNING: 0,  PAUSED: 1, EXPIRED: 2, CANCELLED: 3
 }
@@ -28,80 +28,79 @@ function notifyPomodoro(){
 
 }
 
-var calculateRemaining = function(wanted){
-  if(wanted){
-    return POMODORO_LENGTH - calculateElapsed(wanted);    
+var calculateRemaining = function(pomodoroElement){
+  if(pomodoroElement){
+    return POMODORO_LENGTH - calculateElapsed(pomodoroElement);    
   }
   return undefined;
 }
 
-var calculateElapsed = function(wanted){
-  if(wanted){
-    return Date.now() - wanted.startedAt;
+var calculateElapsed = function(pomodoroElement){
+  if(pomodoroElement){
+    return Date.now() - pomodoroElement.startedAt;
   }
   return undefined;
 }
 
 var task = function(){
-  var wanted = db.find( item => item.status==STATUS.RUNNING );
-  var timeRemaining = calculateRemaining(wanted);
+  var pomodoroElement = db.find( item => item.status==STATUS.RUNNING );
+  var timeRemaining = calculateRemaining(pomodoroElement);
   if(timeRemaining !== undefined){
     console.log("Time remaining: " + timeRemaining);
     if(timeRemaining < 0){
-      wanted.status = STATUS.EXPIRED;
+      pomodoroElement.status = STATUS.EXPIRED;
       notifyPomodoro();
     }
   }
 };
 
 var startOrResumeCommand = function(){
-  var wanted = db.find( item => item.status==STATUS.RUNNING );
-  if(wanted){
+  var pomodoroElement = db.find( item => item.status==STATUS.RUNNING );
+  if(pomodoroElement){
     return "Already running";
   }
-  wanted = db.find( item => item.status==STATUS.PAUSED );
-  if(wanted){
-    wanted.status = STATUS.RUNNING;
-    wanted.startedAt = Date.now() - wanted.elapsed;
+  pomodoroElement = db.find( item => item.status==STATUS.PAUSED );
+  if(pomodoroElement){
+    pomodoroElement.status = STATUS.RUNNING;
+    pomodoroElement.startedAt = Date.now() - pomodoroElement.elapsed;
     return "Pomodoro resumed";
   } else {
-    var pomodoro = { startedAt : Date.now(), status : STATUS.RUNNING };
-    db.push(pomodoro);  
+    db.push({ startedAt : Date.now(), status : STATUS.RUNNING });  
     return "Pomodoro started";
   }
 };
 
 var pauseCommand = function(){
-  var wanted = db.find( item => item.status==STATUS.RUNNING );
-  if(wanted){
-    wanted.status = STATUS.PAUSED;
-    wanted.elapsed = calculateElapsed(wanted);
-    console.log(wanted.elapsed);
+  var pomodoroElement = db.find( item => item.status==STATUS.RUNNING );
+  if(pomodoroElement){
+    pomodoroElement.status = STATUS.PAUSED;
+    pomodoroElement.elapsed = calculateElapsed(pomodoroElement);
+    console.log(pomodoroElement.elapsed);
     return "Pomodoro paused";
   }
   return "Nothing to do";
 };
 
 var stopCommand = function(){
-  var wanted = db.find( item => item.status==STATUS.PAUSED );
+  var pomodoroElement = db.find( item => item.status==STATUS.PAUSED );
   var response = "Nothing to do";
-  if(wanted){      
-    wanted.status = STATUS.CANCELLED;
+  if(pomodoroElement){      
+    pomodoroElement.status = STATUS.CANCELLED;
     response = "Pomodoro stoped";
   }
 
-  wanted = db.find( item => item.status==STATUS.RUNNING );
-  if(wanted){
-    wanted.status = STATUS.CANCELLED;
+  pomodoroElement = db.find( item => item.status==STATUS.RUNNING );
+  if(pomodoroElement){
+    pomodoroElement.status = STATUS.CANCELLED;
     response = "Pomodoro stoped";
   }
   return response;
 };
 
 var showCommand = function(){
-  var wanted = db.find( item => item.status==STATUS.RUNNING );
-  if(wanted){
-    return "Time remaining:" + calculateRemaining(wanted);
+  var pomodoroElement = db.find( item => item.status==STATUS.RUNNING );
+  if(pomodoroElement){
+    return "Time remaining:" + calculateRemaining(pomodoroElement);
   }
   return "Nothing to do";   
 };
