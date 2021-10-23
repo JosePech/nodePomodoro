@@ -1,1 +1,1 @@
-osascript -e 'display alert "Pomodoro alert!" message "'"$1"'" as critical'
+ osascript -e 'display dialog "'"$1"'" with title "Pomodoro event" buttons {"OK"} default button 1 with icon POSIX file "osx/pomodoro.icns"'
