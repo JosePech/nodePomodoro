@@ -2,6 +2,7 @@
 if pgrep -x "nodePomodoro" > /dev/null
 then
     curl -d '{"action":"stop"}' -H "Content-Type: application/json" -X POST http://localhost:8080/pomodoro
+    echo ""
 else
     echo "Application not started"
 fi

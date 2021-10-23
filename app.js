@@ -51,18 +51,16 @@ var task = function(){
 var startOrResumeCommand = function(){
   var wanted = db.find( item => item.status==STATUS.RUNNING );
   if(wanted){
-    console.log("Already running");
-    console.log("No operation");
-    return;
+    return "Already running";
   }
   wanted = db.find( item => item.status==STATUS.PAUSED );
   if(wanted){
     wanted.status = STATUS.RUNNING;
-    console.log("Resumed");
+    return "Pomodoro resumed";
   } else {
     var pomodoro = { startedAt : Date.now(), status : STATUS.RUNNING };
     db.push(pomodoro);  
-    console.log("Created");
+    return "Pomodoro started";
   }
 };
 
@@ -70,41 +68,33 @@ var pauseCommand = function(){
   var wanted = db.find( item => item.status==STATUS.RUNNING );
   if(wanted){
     wanted.status = STATUS.PAUSED;
-    console.log("Paused");
-  } else {
-    console.log("No operation");
-  }  
+    return "Pomodoro paused";
+  }
+  return "Nothing to do";
 };
 
 var stopCommand = function(){
   var wanted = db.find( item => item.status==STATUS.PAUSED );
+  var response = "Nothing to do";
   if(wanted){      
     wanted.status = STATUS.CANCELLED;
-    console.log("Stoped paused");
-  } else {
-    console.log("No operation");
+    response = "Pomodoro stoped";
   }
 
   wanted = db.find( item => item.status==STATUS.RUNNING );
   if(wanted){
     wanted.status = STATUS.CANCELLED;
-    console.log("Stoped running");
-  } else {
-    console.log("No operation");
+    response = "Pomodoro stoped";
   }
+  return response;
 };
 
 var showCommand = function(){
   var wanted = db.find( item => item.status==STATUS.RUNNING );
   if(wanted){
-    var msg = "Time remaining:" + calculateRemaining(wanted);
-    console.log(msg);
-    return msg;
-  } else {
-    var msg = "No operation";
-    console.log(msg);
-    return msg;
-  } 
+    return "Time remaining:" + calculateRemaining(wanted);
+  }
+  return "Nothing to do";   
 };
 
 var db = [];
@@ -114,11 +104,11 @@ var ticker = setInterval(task,1000);
 function processCommand(command){
   console.log(command.action)
   if(command.action === "start"){
-    startOrResumeCommand();
+    return startOrResumeCommand();
   } else if(command.action === "pause"){
-    pauseCommand();
+    return pauseCommand();
   } else if(command.action === "stop"){
-    stopCommand();
+    return stopCommand();
   } else if(command.action === "show"){
     return showCommand();
   }
@@ -129,7 +119,7 @@ function postHandler(req, res, reqUrl) {
   req.setEncoding('utf8');
   req.on('data', (chunk) => {
     res.writeHead(200);    
-    res.write('OK: ' + processCommand(JSON.parse(chunk)));
+    res.write('-> ' + processCommand(JSON.parse(chunk)));
     res.end();
   });
 }
