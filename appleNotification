@@ -1,1 +1,3 @@
- osascript -e 'display dialog "'"$1"'" with title "Pomodoro event" buttons {"OK"} default button 1 with icon POSIX file "osx/pomodoro.icns"'
+#!/bin/bash
+cd "${0%/*}"
+osascript -e 'display dialog "'"$1"'" with title "Pomodoro event" buttons {"OK"} default button 1 with icon POSIX file "osx/pomodoro.icns"'
