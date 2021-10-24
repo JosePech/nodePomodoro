@@ -1,7 +1,7 @@
 #!/bin/bash
 if pgrep -x "nodePomodoro" > /dev/null
 then
-    curl -d '{"action":"show"}' -H "Content-Type: application/json" -X POST http://localhost:8080/pomodoro
+    curl -d '{"action":"show"}' -H "Content-Type: application/json" -X POST http://localhost:55000/pomodoro
     echo ""
 else
     echo "Application not started"
