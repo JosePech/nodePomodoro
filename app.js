@@ -100,7 +100,7 @@ var stopCommand = function(){
 var showCommand = function(){
   var pomodoroElement = db.find( item => item.status==STATUS.RUNNING );
   if(pomodoroElement){
-    return "Time remaining:" + calculateRemaining(pomodoroElement);
+    return "Time remaining:" + (calculateRemaining(pomodoroElement) / 1000);
   }
   return "Nothing to do";   
 };
@@ -150,6 +150,6 @@ http.createServer((req, res) => {
   // find the related function by searching "method + pathname" and run it
   var redirectedFunc = router[req.method + reqUrl.pathname] || router['default'];
   redirectedFunc(req, res, reqUrl);
-}).listen(8080, () => {
-  console.log('Server is running at http://127.0.0.1:8080/');
+}).listen(55000, () => {
+  console.log('Server is running at http://127.0.0.1:55000/');
 });
