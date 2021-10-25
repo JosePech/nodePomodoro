@@ -1,5 +1,5 @@
 #!/bin/bash
 cd "${0%/*}"
-bash startServer
+bash startServer > /dev/null 2>&1
 curl -d '{"action":"start"}' -H "Content-Type: application/json" -X POST http://localhost:55000/pomodoro
 echo ""

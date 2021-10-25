@@ -133,6 +133,12 @@ function postHandler(req, res, reqUrl) {
   });
 }
 
+function healthHandler(req, res, reqUrl) {
+  res.writeHead(200);    
+  res.write('Alive');
+  res.end();
+}
+
 /** if there is no related function which handles the request, then show error message */
 function noResponse(req, res) {
   res.writeHead(404);
@@ -144,6 +150,7 @@ http.createServer((req, res) => {
   // create an object for all redirection options
   const router = {
     'POST/pomodoro': postHandler,
+    'HEAD/health': healthHandler,
     'default': noResponse
   };
   // parse the url by using WHATWG URL API

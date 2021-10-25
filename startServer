@@ -2,6 +2,14 @@
 
 if ! pgrep -x "nodePomodoro" > /dev/null
 then
-    exec -a nodePomodoro node app.js > /dev/null 2>&1 &
-    sleep 2
+    exec -a nodePomodoro node app.js > /dev/null 2>&1 &    
+    http_status=$(curl -LI http://localhost:55000/health -o /dev/null -w '%{http_code}\n' -s)    
+    i="0"
+    while [ $i -lt 20 ] && [ $http_status -ne 200 ]
+    do        
+        i=$[$i+1]
+        http_status=$(curl -LI http://localhost:55000/health -o /dev/null -w '%{http_code}\n' -s)
+        sleep 1
+    done
+    echo "Server reached with attempt $i and status $http_status"
 fi
