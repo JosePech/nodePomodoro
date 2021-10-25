@@ -100,7 +100,8 @@ var stopCommand = function(){
 var showCommand = function(){
   var pomodoroElement = db.find( item => item.status==STATUS.RUNNING );
   if(pomodoroElement){
-    return "Time remaining:" + (calculateRemaining(pomodoroElement) / 1000);
+    var remaining = Math.floor((calculateRemaining(pomodoroElement) / 1000) / 60,2);
+    return "Time remaining:" + Math.round((remaining + Number.EPSILON) * 100) / 100 + " minutes.";
   }
   return "Nothing to do";   
 };
