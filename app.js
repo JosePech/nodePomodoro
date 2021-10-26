@@ -30,7 +30,7 @@ function notifyPomodoro(){
 
 var calculateRemaining = function(pomodoroElement){
   if(pomodoroElement){
-    return POMODORO_LENGTH - calculateElapsed(pomodoroElement);    
+    return pomodoroElement.length - calculateElapsed(pomodoroElement);    
   }
   return undefined;
 }
@@ -54,7 +54,7 @@ var task = function(){
   }
 };
 
-var startOrResumeCommand = function(){
+var startOrResumeCommand = function(command){
   var pomodoroElement = db.find( item => item.status==STATUS.RUNNING );
   if(pomodoroElement){
     return "Already running";
@@ -65,7 +65,8 @@ var startOrResumeCommand = function(){
     pomodoroElement.startedAt = Date.now() - pomodoroElement.elapsed;
     return "Pomodoro resumed";
   } else {
-    db.push({ startedAt : Date.now(), status : STATUS.RUNNING });  
+    var pomodoroLength = command.length ? command.length * 60 * 1000 : POMODORO_LENGTH;
+    db.push({ startedAt : Date.now(), length: pomodoroLength, status : STATUS.RUNNING });  
     return "Pomodoro started";
   }
 };
@@ -113,7 +114,7 @@ var ticker = setInterval(task,1000);
 function processCommand(command){
   console.log(command.action)
   if(command.action === "start"){
-    return startOrResumeCommand();
+    return startOrResumeCommand(command);
   } else if(command.action === "pause"){
     return pauseCommand();
   } else if(command.action === "stop"){
