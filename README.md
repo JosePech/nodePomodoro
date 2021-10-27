@@ -30,3 +30,13 @@ All record of completed pomodoros is kept in a in-memory array, when you stop th
 ## Break times
 
 Every pomodoro the break is for 5 minutes. After 4 pomodoros the break is set for 15 minutes.
+
+## RayCast Integration
+
+After you cloned the nodePomodoro repository:
+
+- Raycast can be installed via brew:  ```brew install --cask raycast```
+- If NodeJS is not installed for all users ie. ```$ which node``` returns a user specific path then its better to create a symlink to ```/usr/local/bin```
+- Create a symlink of the nodePomodoro repository to /usr/local/bin for convenience.
+- Add the directory raycast_commands to the RayCast script commands.
+    
