@@ -18,4 +18,4 @@
 # @raycast.authorURL https://github.com/JosePech
 
 cd /usr/local/bin/nodePomodoro
-./startPomodoro
+./startPomodoro $1
