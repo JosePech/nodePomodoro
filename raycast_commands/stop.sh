@@ -4,7 +4,7 @@
 
 # Required parameters:
 # @raycast.schemaVersion 1
-# @raycast.title Resume
+# @raycast.title Stop
 # @raycast.packageName NodePomodoro
 # @raycast.mode silent
 
